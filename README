@@ -18,13 +18,15 @@ only for testing purpose. The project shall not be used for any other
 purpose than easly testing your interaction with a fake starteam server.
 
 Building:
-Git-Starteam use a sconscript to build it's respective jar file. This
-is to help people that don't have Eclipse installed at their deployment
-location. You can use the latest version of scons at : 
+Git-Starteam use a sconscript to build it's respective jar file. 
+You can use the latest version of scons at : 
 http://www.scons.org/
 
 To build just call scons in the root directory where you have clone the
 repository.
+
+Alternativelly, there is is maven build that you can use.
+
 
 
 Build with starteam80 API:

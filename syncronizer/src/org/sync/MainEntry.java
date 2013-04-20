@@ -166,7 +166,7 @@ public class MainEntry {
 		System.out.println("[-R]\t\t\tResume the file history importation for branch view");
 		System.out.println("[-H <head>]\t\tSelect the name of the head to use");
 		System.out.println("[-X <path to dvcs>]\tSelect the path where to find the dvcs executable");
-		System.out.println("[-c]\t\t\tCreate a new repository if one does not exist");
+		System.out.println("[-c]\t\t\tCreate a new (bare) repository if one does not exist");
 		System.out.println("java -jar Syncronizer.jar -h localhost -P 23456 -p Alpha -v MAIN -U you");
 		
 	}
