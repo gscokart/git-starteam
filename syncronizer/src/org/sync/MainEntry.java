@@ -51,6 +51,7 @@ public class MainEntry {
 		CmdLineParser.Option isCreateRepo = parser.addBooleanOption('c', "create-new-repo");
 		CmdLineParser.Option selectPassword = parser.addStringOption("password");
 		CmdLineParser.Option dumpToFile = parser.addStringOption('D', "dump");
+		CmdLineParser.Option isVerbose = parser.addBooleanOption("verbose");
 
 		try {
 			parser.parse(args);
@@ -80,10 +81,16 @@ public class MainEntry {
 		Boolean createNewRepo = (Boolean) parser.getOptionValue(isCreateRepo);
 		String password = (String) parser.getOptionValue(selectPassword);
 		String dumpTo = (String) parser.getOptionValue(dumpToFile);
+		Boolean verboseFlag = (Boolean) parser.getOptionValue(isVerbose);
+		boolean verbose = verboseFlag != null && verboseFlag;
 		
 		if(host == null || port == null || project == null || view == null) {
 			printHelp();
 			System.exit(3);
+		}
+
+		if(null != folder && !folder.endsWith("/")) {
+			folder = folder + "/";
 		}
 		
 		Date date = null;
@@ -115,8 +122,10 @@ public class MainEntry {
 		}
 		int userid = starteam.logOn(user, password);
 		if(userid > 0) {
+			boolean projectFound = false;
 			for(Project p : starteam.getProjects()) {
 				if(p.getName().equalsIgnoreCase(project)) {
+					projectFound = true;
 					if(null == keyword) {
 						p.setExpandKeywords(false);
 					} else {
@@ -132,8 +141,11 @@ public class MainEntry {
 					if(null != dumpTo) {
 						g.setDumpFile(new File(dumpTo));
 					}
+					g.setVerbose(verbose);
+					boolean viewFound = false;
 					for(View v : p.getViews()) {
 						if(v.getName().equalsIgnoreCase(view)) {
+							viewFound = true;
 							if(null != timeBased && timeBased) {
 								g.generateDayByDayImport(v, date, folder, domain);
 							} else {
@@ -142,10 +154,20 @@ public class MainEntry {
 							// process is finished we can close now.
 							g.dispose();
 							break;
+						} else if(verbose) {
+							System.err.println("Not view: " + v.getName());
 						}
 					}
+					if (!viewFound) {
+						System.err.println("View not found: " + view);
+					}
 					break;
+				} else if(verbose) {
+					System.err.println("Not project: " + p.getName());
 				}
+			}
+			if (!projectFound) {
+				System.err.println("Project not found: " + project);
 			}
 		} else {
 			System.err.println("Could not log in user: " + user);
@@ -167,6 +189,9 @@ public class MainEntry {
 		System.out.println("[-H <head>]\t\tSelect the name of the head to use");
 		System.out.println("[-X <path to dvcs>]\tSelect the path where to find the dvcs executable");
 		System.out.println("[-c]\t\t\tCreate a new (bare) repository if one does not exist");
+		System.out.println("[--password]\t\t\tStarTeam password");
+		System.out.println("-D <dump file>\t\t\tDump fast-import data to file");
+		System.out.println("[--verbose]\t\t\tVerbose output");
 		System.out.println("java -jar Syncronizer.jar -h localhost -P 23456 -p Alpha -v MAIN -U you");
 		
 	}
