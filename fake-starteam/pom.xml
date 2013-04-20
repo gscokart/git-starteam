@@ -8,7 +8,6 @@
     <version>0.1.3-SNAPSHOT</version>
   </parent>
   <artifactId>fake-starteam</artifactId>
-  <version>${parent.version}</version>
   <name>fake starteam</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
